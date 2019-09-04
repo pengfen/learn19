@@ -1,0 +1,179 @@
+2. PHP的时间和日期
+    2.1 UNIX时间戳  自从 Unix 纪元（格林威治时间 1970 年 1 月 1 日 00:00:00）到当前时间的秒数 
+        time()              获取当前的事件戳
+        mktime()            获取指定日期时间 的时间戳  is_dst参数表示是否为夏时制，PHP5.10后此参数已废除。
+
+        strtotime()     把任意英文格式的时间日期转换为时间戳
+        时间戳： 是公元1970年1月1日 0点 0分 0秒  至今 的秒数  
+    2.2 在PHP中获取日期和时间
+        getdate()
+    2.3 日期和时间的格式化输出
+        date()
+    2.3 修改PHP的默认时区
+        1、修php.ini配置文件：
+                 date.timezone = Etc/GMT+8  
+                 date.timezone = PRC
+                 date.timezone = Asia/ChongQing
+        2、date_default_timezone_set( ):     -- 设定用于一个脚本中所有日期时间函数的默认时区 。
+        3、date_default_timezone_get( ):     -- 获取当前时区
+
+    2.4 使用微妙计算PHP脚本执行时间
+        microtime()
+
+<?php   
+    echo date("Y-m-d", strtotime("now"));                   //输出： 2012-04-05
+    echo date("Y-m-d", strtotime("8 may 2012"));       //输出： 2012-05-08
+    echo date("Y-m-d", strtotime("+1 day"));               //输出： 2012-04-06
+    echo date("Y-m-d", strtotime("last monday"));       //输出： 2012-04-02
+    $now = strtotime("now");                           //当前时间 
+    $endtime = strtotime("2014-08-18 08:08:08"); //设定毕业时间，转成时间戳
+    
+    $second = $endtime - $now;                  //获取毕业时间到现在时间的时间戳（秒数）
+    $year = floor($second/3600/24/365);     //从这个时间戳中换算出年头数
+    $temp = $second - $year*365*24*3600;//从时间戳中去掉整年的秒数，就剩下月份的秒数
+    $month = floor($temp/3600/24/30);       //从这个时间戳中换算出月数
+    $temp = $temp - $month*30*24*3600;  //从时间戳中去掉整月的秒数，就剩下天的秒数
+    $day = floor($temp/3600/24);                //从这个时间戳中换算出剩余的天数
+    
+    $temp = $temp - $day*3600*24;           //从时间戳中去掉整天的秒数，就剩下小时的秒数
+    $hour = floor($temp/3600);                   //从这个时间戳中换算出剩余的小时数
+    $temp = $temp - $hour*3600;               //从时间戳中去掉整小时的秒数，就剩下分的秒数
+    $minute = floor($temp/60);                    //从这个时间戳中换算出剩余的分数
+    $second1 = $temp - $minute*60;          //最后就只有剩余的秒数了
+    
+    echo "距离培训毕业还有{$year}年{$month}月{$day}天{$hour}小时{$minute}分{$second1}秒";
+?>
+getdate -- 取得日期／时间信息 
+格式：array getdate ( [int timestamp] ) 
+返回一个根据 timestamp 得出的包含有日期信息的结合数组。如果没有给出时间戳则认为是当前本地时间。数组中的单元如下
+
+seconds 秒的数字表示  0-59
+minutes 分钟的数字表示 0-59
+hours 小时的数字表示 0-23
+mday 月份中第几天的数字表示 1-31
+wday 星期中第几天的数字表示 0(表示星期天)到6(表示星期六)
+mon 月份的数字表示 1-12
+year 4位数字表示的完整年份 1999-2003
+yday 一年中第几天的数字表示 0-365
+weekday 星期几的完整文本表示 sunday到saturday
+month 月份的完成文本表示 January-December
+
+date -- 格式化一个本地时间／日期 
+格式：string date ( string format [, int timestamp] ) 
+返回将整数 timestamp 按照给定的格式字串而产生的字符串。如果没有给出时间戳则使用本地当前时间。换句话说，timestamp 是可选的，默认值为 time()（当前时间戳）。 
+例如：
+  echo date(“Y年m月d日 H:i:s”); //2010年10月28日 14:22:28
+常用参数：
+Y：四位数年   m：月01-12   n:月1-12      d：天01-31  j：天1-31 
+H：时24时制   h：小时12制  i：分钟00-59  s：秒00-59  w：星期几0-6
+A：上午AM或下午PM          a：上午am或下午pm。
+
+修改PHP的默认时区有两种方式：
+1、修php.ini配置文件：
+date.timezone = Etc/GMT+8
+2、date_default_timezone_set( ): -- 设定用于一个脚本中所有日期时间函数的默认时区 。
+如：date_default_timezone_set(“PRC”); //中国时区。
+3、date_default_timezone_get( ): -- 获取当前时区
+
+microtime -- 返回当前 Unix 时间戳和微秒数 
+格式：mixed microtime ( [bool get_as_float] ) 
+microtime() 当前 Unix 时间戳以及微秒数。本函数仅在支持 gettimeofday() 系统调用的操作系统下可用。 
+如果调用时不带可选参数，本函数以 "msec sec" 的格式返回一个字符串，其中 sec 是自 Unix 纪元（0:00:00 January 1, 1970 GMT）起到现在的秒数，msec 是微秒部分。字符串的两部分都是以秒为单位返回的。 
+如果给出了 get_as_float 参数并且其值等价于 TRUE，microtime() 将返回一个浮点数。 
+
+
+
+        
+// 计算时间差
+
+$time1 = strtotime("2016-06-29 10:00:00");
+$time2 = strtotime("2016-06-29 10:01:00");
+echo '时间差是 '.($time2 - $time1); // 60 计算的是秒数
+
+// 计算时间差
+
+$time1 = strtotime("2016-06-29 10:00:00");
+$time2 = strtotime("2016-06-29 10:01:01");
+echo '时间差是 '.($time2 - $time1); // 1 计算的是秒数
+
+
+function extime(){ // 用于暂定脚本执行
+    // 判断时间区域
+    $currtime = time();
+    $mintime = strtotime(date('Y-m-d', $currtime).' 07:30:00');
+    $maxtime = strtotime(date('Y-m-d', $currtime).' 14:00:00');
+    // $currtime = date('Y-m-d H:i:s', $currtime);
+    if ($currtime > $mintime && $currtime < $maxtime) {
+        echo '请在早上 07:30 之前,晚上 14:00 以后执行此脚本';
+        echo PHP_EOL;
+        exit;
+    }
+}
+
+
+// 获取凌晨零点
+$time = date('Y-m-d', time()); // 获取当前时间
+$time = date('Y-m-d H:i:s', strtotime($time.' 00:00:00'));
+
+
+// 获取当天的年份
+$y = date("Y");
+// 获取当天的月份
+$m = date("m");
+// 获取当天的号数
+$d = date("d");
+// 将今天开始的年月日时分秒，转换成unix时间戳(开始示例：2015-10-12 00:00:00)
+$todayTime = mktime(0, 0, 0, $m, $d, $y);
+// $todayTime即是当天零点的时间戳
+
+
+// 一句话
+echo date('Y-m-d H:i:s', strtotime(date('Y-m-d', time()).' 00:00:00'));
+echo date('Y-m-d H:i:s', mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+
+获取零点时间
+
+$time = mktime(0,0,0,date('m'),date('d'),date('Y'))
+
+$time = strtotime(date('Y-m-d', time()).' 00:00:00');
+
+转换为时间
+date('Y-m-d H:i:s', $time);
+
+
+比较时间 注意本地需要添加 date_default_timezone_set('PRC'); 
+
+// 根据时间比较
+$currtime = time();
+$mintime = date('Y-m-d', $currtime).' 06:00:00';
+$maxtime = date('Y-m-d', $currtime).' 19:00:00';
+$currtime = date('Y-m-d H:i:s', $currtime);
+
+// 根据时间戳比较
+$currtime = time();
+$mintime = strtotime(date('Y-m-d', $currtime).' 06:00:00');
+$maxtime = strtotime(date('Y-m-d', $currtime).' 19:00:00');
+
+if ($currtime > $mintime && $currtime < $maxtime) {
+    echo '请在早上 06:00 之前,晚上 19:00 以后执行此脚本';
+    echo PHP_EOL;
+    exit;
+}
+
+// 时间比较
+$fromtime = strtotime("2016-06-20 17:41:00");
+$totime = strtotime("2016-06-20 17:46:00");
+echo $totime - $fromtime; // 300 = 5 * 60
+
+判断是否大于五分钟
+if (($totime - $fromtime) > 300) {
+    // 处理大于五分钟的情况
+} else {
+    // 处理小于等于五分钟的情况
+}
+
+
+// 判断时间
+if (date('H', time()) < 12) { echo '上午好';}
+else { echo '下午好'; }
+echo date('H', time()); 01 - 24; 00 - 12 上午 12 - 23 下午

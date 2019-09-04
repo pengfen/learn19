@@ -1,0 +1,19 @@
+1. 编写控制器
+namespace frontend\controllers;
+
+use Yii;
+use yii\web\Controller;
+
+/**
+ * Site controller
+ */
+class WelController extends Controller
+{
+    public function actionSay() {
+        $message = "welcome to yii frame world";
+        return $this->render("say", ["message" => $message]);
+    }
+}
+
+2. 编写模板 say.php模板
+<div><?=$message ?></div>

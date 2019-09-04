@@ -1,0 +1,14 @@
+域名管理后台
+A @ IP
+A www IP
+A dev IP
+
+注意
+A的值与CNAME不能相同
+
+nginx.conf
+servar_name www.res.com res.com;
+
+if ($host = 'res.com') {
+	rewrite ^/(.*)$ http://www.res.com/$1 last;
+}

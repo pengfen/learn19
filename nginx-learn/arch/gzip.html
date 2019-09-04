@@ -1,0 +1,20 @@
+gzip 设置 nginx gzip 压缩发送的数据。这会减少需要发送的数据的数量。
+
+gzip_disable 为指定的客户端禁用 gzip 功能。
+
+gzip_proxied 允许或禁止基于请求、响应的压缩。设置为 any，就可以 gzip 所有的请求。
+
+gzip_comp_level 设置了数据压缩的等级。等级可以是 1-9 的任意一个值，9 表示最慢但是最高比例的压缩。
+
+gzip_types 设置进行 gzip 的类型。有下面这些，不过还可以添加更多。
+
+
+gzip on;
+gzip_disable "msie6";
+
+gzip_vary on;
+gzip_proxied any;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+gzip_http_version 1.1;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/jpeg image/gif image/png;

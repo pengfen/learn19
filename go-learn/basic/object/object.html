@@ -1,0 +1,34 @@
+面向对象
+
+type TreeNode struct {
+	Left, Right *TreeNode
+	Value int
+}
+
+func (root *TreeNode) traverse() {
+	if root == nil {
+		return
+	}
+
+	root.Left.traverse()
+	fmt.Print(root.Value)
+	root.Right.traverse()
+}
+
+go语言仅支持封装 不支持继承和多态 (继承和多态使用接口来做)
+
+
+封装
+名字一般使用CamelCase
+首字母大写 public
+首字母小写 private
+
+包
+为结构定义的方法必须放在同一个包内
+可以是不同文件
+
+
+go get 获取第三方库
+使用gopm来获取无法下载的包(对于go get无法获取的包)
+go get -v github.com/gpmgo/gopm
+gopm get -g -v golang.org/...

@@ -1,0 +1,19 @@
+浏览器缓存
+
+HTTP协议定义的缓存机制(如 expires; cache-control)
+
+校验过期机制
+校验是否过期 Expires Cache-Control(max-age)
+协议中Etag头信息校验 Etag
+Last-Modified头信息校验 Last-Modified
+
+添加Cache-Control Expires头
+syntax expires [modified] time;
+expires epoch | max | off;
+default expires off;
+context http, server, location, if in location
+
+location ~ .*\.(html|htm)$ {
+	expires 24h;
+	root ...;
+}

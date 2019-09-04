@@ -1,0 +1,8 @@
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+worker_connections 设置了一个 worker 进程可以同时打开的链接数。 这个值原本受 events 里面的 worker_rlimit_nofile 参数所限制，但是现在这里没有这一项参数，那么调整的幅度就不要太大。虽然没有既定值，但是你只要知道这个值的含义，往后如果有需求，完全可以回头调整。
+
+multi_accept 的作用是告诉 nginx 在收到新链接的请求通知时，尽可能接受链接。当然，得让他开着。

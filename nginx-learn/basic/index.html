@@ -1,0 +1,10 @@
+http index 模块 (ngx_http_index_module)
+
+http_index_module配置
+syntax:; index file ...  #语法
+default: index.html      #默认值 
+context: http, server, location  #作用域
+
+location / {
+	index index.html index.htm;
+}

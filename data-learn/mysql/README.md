@@ -7,4 +7,3 @@
 * import.md   mysql导入sql脚本
 * func.md     mysql函数
 * data.md     mysql数据问题
-* count.md    mysql统计sql

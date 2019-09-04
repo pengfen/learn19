@@ -1,0 +1,220 @@
+
+反射
+反射：可以在运行时动态获取变量的相关信息
+     Import (“reflect”)
+
+两个函数
+a. reflect.TypeOf，获取变量的类型，返回reflect.Type类型
+b. reflect.ValueOf，获取变量的值，返回reflect.Value类型
+c. reflect.Value.Kind，获取变量的类别，返回一个常量
+d. reflect.Value.Interface()，转换成interface{}类型
+
+2. reflect.Value.Kind()方法返回的常量
+const (
+        Invalid Kind = iota
+        Bool
+        Int
+        Int8
+        Int16
+        Int32
+        Int64
+        Uint
+        Uint8
+        Uint16
+        Uint32
+        Uint64
+        Uintptr
+        Float32
+        Float64
+        Complex64
+        Complex128
+        Array
+        Chan
+        Func
+        Interface
+        Map
+        Ptr
+        Slice
+        String
+        Struct
+        UnsafePointer
+) 
+
+reflect.go
+
+
+package main
+
+import (
+    "fmt"
+    "reflect"
+)
+
+func main() {
+
+    var x float64 = 3.4
+    fmt.Println("type:", reflect.TypeOf(x))
+    v := reflect.ValueOf(x)
+    fmt.Println("value:", v)
+    fmt.Println("type:", v.Type())
+    fmt.Println("kind:", v.Kind())
+    fmt.Println("value:", v.Float())
+
+    fmt.Println(v.Interface())
+    fmt.Printf("value is %5.2e\n", v.Interface())
+    y := v.Interface().(float64)
+    fmt.Println(y)
+}
+
+获取变量的值 
+reflect.ValueOf(x).float()
+reflect.ValueOf(x).Int()
+reflect.ValueOf(x).String()
+reflect.ValueOf(x).Bool()
+
+通过反射来改变变量的值 
+reflect.Value.SetXX相关方法
+reflect.Value.SetFloat() 设置浮点数
+reflect.Value.SetInt() 设置整数
+reflect.Value.SetString() 设置字符串
+
+package main
+
+import (
+    "fmt"
+    "reflect"
+)
+
+func main() {
+
+    var a float64
+    fv := reflect.ValueOf(a)
+    fv.SetFloat(3.3)
+    fmt.Printf("%v\n", a)
+}
+
+7. 崩溃的原因 还是值类型和引用类型的原因
+
+v := reflect.ValueOf(x)
+v是x的一个拷贝，修改v，x不会修改
+
+package main
+
+import (
+    "fmt"
+    "reflect"
+)
+
+func main() {
+
+    var a float64
+    fv := reflect.ValueOf(&a)
+    fv.Elem().SetFloat(3.3)
+    fmt.Printf("%v\n", a)
+}
+其中fv.Elem()用来获取指针指向的变量，相当于： 
+var a *int;  
+*a = 100
+
+用反射操作结构体
+a. reflect.Value.NumField()获取结构体中字段的个数
+b. reflect.Value.Method(n).Call来调用结构体中的方法
+package main
+
+import (
+    "fmt"
+    “reflect"
+)
+
+type NotknownType struct {
+    s1 string
+    s2 string
+    s3 string
+}
+func (n NotknownType) String() string {
+    return n.s1 + "-" + n.s2 + "-" + n.s3
+}
+var secret interface{} = NotknownType{"Ada", "Go", "Oberon"}
+
+func main() {
+    value := reflect.ValueOf(secret) // <main.NotknownType Value>
+    typ := reflect.TypeOf(secret)    // main.NotknownType
+    fmt.Println(typ)
+
+    knd := value.Kind() // struct
+    fmt.Println(knd)
+    
+    for i := 0; i < value.NumField(); i++ {
+        fmt.Printf("Field %d: %v\n", i, value.Field(i))
+        //value.Field(i).SetString("C#")
+    }
+    
+    results := value.Method(0).Call(nil)
+    fmt.Println(results) // [Ada - Go - Oberon]
+}
+
+10. 练习，通过反射操作结构体
+package main
+
+import (
+    "fmt"
+    “reflect"
+)
+
+type NotknownType struct {
+    s1 string
+    s2 string
+    s3 string
+}
+func (n NotknownType) String() string {
+    return n.s1 + "-" + n.s2 + "-" + n.s3
+}
+var secret interface{} = NotknownType{"Ada", "Go", "Oberon"}
+
+func main() {
+    value := reflect.ValueOf(secret) // <main.NotknownType Value>
+    typ := reflect.TypeOf(secret)    // main.NotknownType
+    fmt.Println(typ)
+
+    knd := value.Kind() // struct
+    fmt.Println(knd)
+    
+    for i := 0; i < value.NumField(); i++ {
+        fmt.Printf("Field %d: %v\n", i, value.Field(i))
+        //value.Field(i).SetString("C#")
+    }
+    
+    results := value.Method(0).Call(nil)
+    fmt.Println(results) // [Ada - Go - Oberon]
+}
+10. 练习2，通过反射修改结构体
+package main
+
+import (
+    "fmt"
+    "reflect"
+)
+
+type T struct {
+    A int
+    B string
+}
+
+func main() {
+    t := T{23, "skidoo"}
+    s := reflect.ValueOf(&t).Elem()
+    typeOfT := s.Type()
+    for i := 0; i < s.NumField(); i++ {
+        f := s.Field(i)
+        fmt.Printf("%d: %s %s = %v\n", i,
+            typeOfT.Field(i).Name, f.Type(), f.Interface())
+    }
+    s.Field(0).SetInt(77)
+    s.Field(1).SetString("Sunset Strip")
+    fmt.Println("t is now", t)
+}
+1. 实现一个图书管理系统v2，具有以下功能：
+a. 增加用户登录 注册功能
+b. 增加借书过期的图书界面
+c. 增加显示热门图书的功能 被借次数最多的top10
+d. 增加查看某个人的借书记录的功能

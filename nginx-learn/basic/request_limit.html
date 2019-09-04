@@ -1,0 +1,107 @@
+nginx的请求限制
+
+连接频率限制 limit_conn_module
+请求频率限制 limit_req_module
+
+HTTP协议版本  连接关系
+HTTP1.0      TCP不能复用
+HTTP1.1      顺序性TCP复用
+HTTP2.0      多路复用TCP复用
+
+HTTP请求建立在一次TCP连接基础上 一次TCP请求至少产生一次HTTP请求
+
+连接限制
+syntax limit_conn_zone key zone=name:size;
+default
+context http
+
+syntax limit_conn zone number;
+default
+context http, server location
+
+请求限制
+syntax limit_req_zone key zone=name;size rate=rate;
+default
+context http
+
+syntax limit_req zone=name [burst=number][nodelay];
+default
+context http, server, location
+
+limit_conn_zone $binary_remote_addr zone=conn_zone:1m;
+limit_req_zone $binary_remote_addr zone=req_zone:1m rate=1r/s;
+
+location / {
+	limit_req zone=req_zone;
+}
+
+ab -n 20 -c 20 self.
+
+
+limit_req zone=req_zone burst=3 nodelay;
+
+limit_conn conn_zone 1;
+
+
+
+流量限制
+limit_rate
+语法 limit_rate rate
+默认值 limit_rate 0:
+作用域 http, server, location, if in location
+限制向客户端传递送响应的速率限制 rate单位字节/秒
+
+limit_rate_after
+语法 limit_rate_after size
+默认值 limit_rate_after 0
+作用域 http, server, location, if in location
+设置不限速传输的响应大小 当传递量大于此值时 超出部分将限制传送
+
+传输量大于 3m，超出部分的传输速率已经被限制在 20k/s
+location /seven/ {
+	root /home/loc;
+	limit_rate_after 3m;
+	limit_rate 20k;
+}
+
+
+并发连接数限制
+limit_conn_zone
+语法 limit_conn_zone zone_name $variable the_size
+默认值 no
+作用域 http
+定义数据区 里面记录会话状态信息 variable 定义判断会话的变量；the_size 定义记录区的总容量
+limit_conn
+语法 limit_conn zone_name the_size
+默认值 no
+作用域 http, server, location
+指定一个会话最大并发连接数 当超过指定的最大并发连接数时 服务器将返回 Service unavailable
+
+http {
+	limit_conn_zone $binary_remote_addr zone=one:10m
+	...
+	server {
+	    ...
+	    location /seven/ {
+	        limit_conn one 1;
+	        ...
+	    }
+	}
+}
+
+定义一个叫“one”的记录区，总容量为 10M，以变量$binary_remote_addr作为会话的判断基准（即一个地址一个会话）。 限制 /seven/ 目录下，一个会话只能进行一个连接。 简单点，就是限制 /seven/ 目录下，一个 IP 只能发起一个连接，多过一个，一律 503
+
+你可以注意到了，在这里使用的是 $binary_remote_addr 而不是 $remote_addr。$remote_addr 的长度为 7 至 15 bytes，会话信息的长度为 32 或 64 bytes。 而 $binary_remote_addr 的长度为 4 bytes，会话信息的长度为 32 bytes。 当 zone 的大小为 1M 的时候，大约可以记录 32000 个会话信息（一个会话占用 32 bytes）
+
+由于环境的原因这里没有办法测试只是让大家了解，限制并发连接数 nginx 的对应模块的配置，如果大家有需要，可以进一步参照 http://wiki.nginx.org/HttpLimitZoneModule 这里有更详细的讲解
+
+
+nginx.conf 配置
+limit_req_zone $binary_remote_addr zone=allips:10m rate=4r/m;
+
+具体网配置 conf.d/res.conf
+limit_req zone=allips burst=5 nodelay;
+
+可能导致出现503错误
+解决方案
+php 入口文件限制IP每五分钟三百个请求

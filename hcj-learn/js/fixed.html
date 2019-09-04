@@ -1,0 +1,39 @@
+需求 随滚动条滚动定位在项部
+
+顶端定位
+<em class="date_fixed" style="position: fixed; color: rgb(29, 101, 174); background: rgb(228, 240, 251); height: 30px; line-height: 30px; padding-left: 8px; width: 760px; display: inline-block; top: 90px;">May 23rd</em>
+
+
+时间
+<em class="flash_date" style="color: #1d65ae; background:#e4f0fb; width: 100%; height: 30px; line-height: 30px; margin-bottom: 10px; display: inline-block;  padding-left: 8px;">May 22nd</em>
+
+jQuery(function(){
+    jQuery(".flash_date").each(function(i, item) { // 去除重复日期
+        if (i > 0) {
+            var prev = jQuery(this).prev().prev('em').text();
+            if (prev == jQuery(this).text()) {
+                jQuery(this).css("display", "none");
+            }
+        }
+    });
+
+    jQuery(window).scroll(function() {
+        var height = jQuery(".flownews-header-sticky").css("height"); // 获取菜单高度用于定位
+        var top = jQuery("html,body").scrollTop(); // 滚动条高度
+        if (top >= 300) {
+            jQuery(".date_fixed").css("display", "inline-block"); // 显示
+            jQuery(".flash_date").each(function() {
+                if(jQuery(this).css("display") == "inline-block"){
+                    var text = jQuery(this).text();
+                    var curr_top = jQuery(this).offset().top - 170;
+                    if (curr_top < top) {
+                        jQuery(".date_fixed").css("top", height);
+                        jQuery(".date_fixed").text(text);
+                    }
+                }
+            });
+        } else {
+            jQuery(".date_fixed").css("display", "none"); // 隐藏
+        }
+    });
+ });

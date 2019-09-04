@@ -1,0 +1,20 @@
+1. 编写sql
+database/job.sql
+
+2. 修改数据库配置
+'db' => [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'mysql:host=localhost;dbname=yii_test',
+    'username' => 'root',
+    'password' => 'root',
+    'charset' => 'utf8',
+],
+
+3. 编写活动记录
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
+class Country extends ActiveRecord
+{
+}

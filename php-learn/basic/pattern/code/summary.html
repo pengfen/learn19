@@ -1,0 +1,17 @@
+$p = '/BBC/';
+$str = "BBC是英国的一个电视台";
+
+// 'starttime'=>'2016-06-22 18:29:26' ([-: 0-9]) 匹配时间
+preg_match('/starttime\'=>\'([-: 0-9]+)/i', $conf, $matches);
+
+'mobile'=>array('15173653986'),
+preg_match('/mobile\'=>.*\)/i', $conf, $mobilephone);
+
+$p = '/:(.*)/'; // (\w+) 匹配 steven 匹配:后的字符
+$str = "name:steven jobs";
+
+$p = '/[\d]{3,4}-[\d]{7,8}/'; 匹配固定电话
+$str = "我的电话是 010-12345678";
+
+$pattern = '/https:\/\/t.co\/[0-9a-zA-Z]{10}/'; // 匹配(https://t.co/...)替换
+$text = preg_replace($pattern, "", $text);

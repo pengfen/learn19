@@ -1,0 +1,9 @@
+安装kafka
+a. 安装JDK 从oracle下载最新的SDK安装
+b. 安装zookeeper3.3.6
+    mv conf/zoo_sample.cfg conf/zoo.cfg
+    编辑conf/zoo.cfg 修改dataDir=数据目录
+    运行bin/zkServer.cmd
+c. 安装kafka
+    打开config目录下的server.properties 修改log.dirs=日志目录 修改advertised.host.name=服务器IP
+    启动kafka ./bin/ ./config/server.properties

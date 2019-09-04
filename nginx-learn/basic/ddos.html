@@ -1,0 +1,46 @@
+http_limit_conn_module 可以限制单个 IP 连接数
+http_limit_req_module 可以限制单个 IP 每秒请求数
+
+http {
+	limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
+	...
+	server {
+	    ...
+	    location ~ \.php$ {
+	        limit_req zone=one burst=5 nodelay;
+	    }
+	}
+}
+$binary_remote_addr 二进程远程地址
+zone=one:10m 定义zone名字叫one 并为这个zone分配10M内存 用来存储会话 1m内存可以保存16000会话
+rate=10r/s 限制频率为每秒10个请求
+burst=5 允许超过频率限制的请求数不多于5个 
+nodelay 超过的请求不被延迟处理 设置后15个请求在1秒内处理
+
+限制IP连接数
+http {
+	limit_conn_zone $binary_remote_addr zone=addr:10m;
+	...
+	server {
+	    ...
+	    location /download/ {
+	        limit_conn addr 1; // 限制同一时间内1个连接数 超出直接返回503
+	    }
+	}
+}
+
+白名单设置
+geo $whiteiplist {
+	default 1;
+	IP 0;
+}
+map $whiteiplist $limit {
+	1 $binary_remote_add;
+	0 "";
+}
+limit_req_zone $limit zone=one:10m rate=10r/s;
+limit_conn_zone $limit zone=addr:10m;
+
+geo 模块定义一个默认值是1的变量whiteiplist 当ip在白名单中 变量whiteiplist的值为0 反之为1
+在白名单中 ---> whiteiplist=0 ---> $limit="" ---> 不会存储到10m的会话在状态中 ---> 不受限制
+不在白名单中 ---> whiteiplist=1 ---> $limit=二进程远程地址 ---> 存储进10m的会话在状态中 ---> 受到限制

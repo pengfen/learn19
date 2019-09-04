@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="/special/js/jquery.js"></script>
+    </head>
+    <body>
+        内容
+        <textarea id="source">
+
+        </textarea>
+        <input type="button" id="translate" value="翻译">
+        <br/>
+        有道翻译
+        <div id="yudao">
+
+        </div>
+        百度翻译
+        <div id="baidu">
+
+        </div>
+
+        <script>
+            $("#translate").on("click", function () {
+                var source = $("#source").val();
+                if (source) {
+                    var url = "/translate/translate.php";
+                    $.post(url, {"source" : source, "type" : 1}, function (res) {
+                        console.log(res);
+                        $("#yudao").text(res);
+                    })
+
+                    $.post(url, {"source" : source, "type" : 2}, function (res) {
+                        console.log(res);
+                        $("#baidu").text(res);
+                    })
+                }
+            })
+        </script>
+    </body>
+</html>

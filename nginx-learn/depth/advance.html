@@ -1,0 +1,58 @@
+Nginx高级模块 介绍一些最新或者理解难度稍高的Nginx模块
+
+secure_link_module 模块
+制定并允许检查请求的链接的真实性以及保护资源免遭未经授权的访问
+限制链接生效周期
+
+syntax secure_link expression;
+default
+context http, server, location
+
+syntax secure_link_md5 expression;
+default
+context http, server, location
+
+location / {
+	secure_link $arg_md5, $arg_expires;
+	secure_link_md5 "$secure_link_expires$uri imooc";
+
+	if ($secure_link = "") {
+		return 403;
+	}
+
+	if ($secure_link = "0") {
+		return 410;
+	}
+}
+
+#!/bin/sh
+
+servername=".com"
+download_file="down/file.img"
+time_num=$(date -d "2018-1-1 00:00:00" +%s)
+secret_num="imooc"
+
+res=$(echo -n "${time_num}${download_file} ${secret_num}"|openssl md5 -binary | openssl base64 | tr +/ -_ | tr -d =)
+
+echo "http://${servername}${download_file}?md5=${res}&expires=${time_num}"
+
+
+geoip_module模块
+基于IP地址匹配MaxMind GeoIP二进制文件 读取IP所在地域信息
+yum install nginx-module-geoip
+区别国内外作HTTP访问规则
+区别国内城市地域作HTTP访问规则
+
+geoip_country /etc/nginx/geoip/GeoIP.dat;
+geoip_city /etc/nginx/geoip/GeoLiteCity.dat;
+
+location / {
+	if ($geoip_country_code != CN) {
+		return 403;
+	}
+}
+
+location /myip {
+	default_type text/plain;
+	return 200 "$remote_addr $geoip_country_name $geoip_country_code $geoip_city";
+}

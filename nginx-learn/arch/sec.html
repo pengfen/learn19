@@ -1,0 +1,12 @@
+nginx的alias和root区别
+
+# http://res.com/request_path/image/cat.png  ---> /local_path/image/request_path/image/cat.png
+location /request_path/image/ {
+	root /local_path/image/;
+}
+
+# http://res.com/request_path/image/cat.png ---> /local_path/image/cat.png
+location /request_path/image/ {
+	alias /local_path/image/;
+}
+

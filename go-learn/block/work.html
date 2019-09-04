@@ -1,0 +1,53 @@
+工作量证明
+工作的结果作为数据加入区块链成为一个区块
+完成这个工作的人也会获得奖励(这也就是通过挖矿获得比特币)
+整个"努力工作并进行证明"的机制 就叫工作量证明
+
+创建work项目
+在work下创建 bin pkg src三个目录
+指定GOPATH  settings ---> GOPATH ---> ~/go/src/project/work
+
+src 目录下创建 coin(入口) core(核心)
+
+core 
+block.go 区块
+blockchain.go 区块链
+proofofword.go 工作量证明
+utils.go 工具类
+
+演示
+export GOPATH=/home/ricky/project/work
+go install coin
+cd bin
+./coin
+
+采用哈希算法
+不可逆 无法从一个哈希值恢复原始数据 哈希并不是加密
+唯一性 对于特定的数据 只能有一个哈希 并且这个哈希是唯一的
+防篡改 改变输入数据中的一个字节 导致输出一个完全不同的哈希
+
+哈希算法特性
+正向快速 给定明文和hash算法 在有限时间和有限资源内能计算出hash值
+逆向困难 给定hash值 在有限时间内很难逆推出明文
+输入敏感 原始输入信息修改一点信息 产生的hash值看起来应该都有很大不同
+冲突避免 很难找到两段内容不同的明文 使得他们的hash值一致(发生冲突)
+
+
+
+创建work_stor项目
+在work_stor下创建 bin pkg src三个目录
+指定GOPATH  settings ---> GOPATH ---> ~/go/src/project/work_stor
+
+src 目录下创建 coin(入口) core(核心)
+
+core 
+block.go 区块
+blockchain.go 区块链 (go get github.com/boltdb/bolt)
+proofofword.go 工作量证明
+utils.go 工具类
+
+演示
+export GOPATH=/home/ricky/project/work
+go install coin
+cd bin
+./coin

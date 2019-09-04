@@ -1,0 +1,207 @@
+消息队列
+
+业务系统 --- 入队 ---> 消息队列 --- 出队 ---> 队列处理系统
+
+应用场景
+解耦  流量削峰  异步通信  扩展性  排序保证
+
+mysql 可靠性高 易实现 速度慢
+redis 速度快 单条大消息包时效率低
+消息系统 专业性强 可靠 学习成本高
+
+
+消息处理触发机制
+死循环方式读取 易实现 故障时无法及时恢复
+定时任务 压力均分 有处理量上限
+守护进程 类似于php-fpm php-cg 需要shell基础
+
+
+解耦案例 队列处理订单系统和配送系统
+订单系统授受用户订单 ---> 订单队列表 ---> 配送系统(crontab定时启动) ---> 标记配送结果
+
+接受用户订单Order.php ---> 订单系统 ---> 队列表 ---> 配送处理系统Goods.php(定时脚本goods.sh) ---> 配送系统
+create table `order_queue` (
+`id` int unsigned not null auto_increment comment '订单id',
+`order_id` int not null,
+`mobile` varchar(20) not null comment '用户手机号',
+`address` varchar(100) not null comment '用户地址',
+`created_at` datetime not null default '0000-00-00 00:00:00' comment '订单创建时间',
+`updated_at` datetime not null default '0000-00-00 00:00:00' comment '处理完成时间',
+`status` tinyint(2) not null comment '当前状态 0 未处理 1 已处理 2 处理中',
+primary key(`id`)
+)engine=innodb default charset=utf8
+
+
+
+order_queue.php
+
+// 导入数据库操作类
+include './util/db.php'
+
+if (!empty($_GET["mobile"])) {
+	// 这里应该首先是订单中心的处理流程
+
+    // 对get数据进行过滤
+	$order_id = rand(10000, 99999);
+
+	// 把生成的订单信息存入到队列表中
+	$insert_data = array(
+	    'order_id' => $order_id,
+	    'mobile' => $_GET['mobile'],
+	    'created_at' => date('Y-m-d H:i:s', time()),
+	    'status' => 0,
+	);
+
+	// 把数据存放到列表中
+	$db = DB::getIntance();
+	$res = $db->insert($table, $data);
+	if ($res) {
+		echo $insert_data['order_id']."保存成功";
+	} else {
+		echo '保存失败';
+	}
+}
+
+
+goods.php
+// 配送系统处理队列中的订单并进行标记的一个文件
+
+include './util/db.php';
+$db = DB::getIntance();
+
+// 1 把要处理的记录更新为等待处理
+$waiting = array('status' => 0);
+$lock = array('status' => 2);
+$res_lock = $db->update('order_queue', $lock, $waiting, 2);
+
+// 2 根据更新的数据 进行配送系统的处理
+if ($res_lock) {
+	// 选择要处理订单的内容
+	$res = $db->selectAll('order_queue', $lock);
+
+	// 配货系统进行退货处理
+
+	// 3. 更新订单状态已完成
+	$success = array(
+	    'status' => 1,
+	    'updated_at' => date(‘Y-m-d H:i:s', time())
+	);
+	$res_last = $db->update('order_queue', $success, $lock);
+	if ($res_last) {
+		echo "Success".$res_last;
+	} else {
+		echo "Fail".$res_last;
+	}
+} else {
+	echo "all";
+}
+
+goods.sh
+#!/bin/bash
+
+date "+%G-%m-%d %H:%M:S"
+cd /...
+php goods.php
+
+
+Redis的List类型实现秒杀
+
+Redis数据类型中的list类型
+lpush/lpushx 将值插入到(/存在的)列表头部
+rpush/rpushx 将值插入到(/存在的)列表尾部
+
+lpop 移出并获取列表的第一个元素
+rpop 移出并获取列表的最后一个元素
+
+ltrim 保留指定区间内的元素
+llen 获取列表长度
+lset 通过索引设置列表元素的值
+lindex 通过索引获取列表中的元素
+lrange 获取列表指定范围内的元素
+
+秒杀程序把请求写入Redis (Uid, time_stamps)
+检查Redis已存放数据的长度 走出上限直接丢弃
+死循环处理存入Redis的数据并入库
+create table `redis_queue` (
+`id` int unsigned not null auto_increment,
+`uid` int not null default '0',
+`time_stamp` varchar(24) not null,
+primary key (`id`)
+) engine = innodb default charset=utf8
+
+user.php
+// 加载redis组件
+$redis = new Redis();
+$redis->connect('localhost', 6379);
+$redis_name = "mia"
+
+// 接受用户的id;
+$uid = $_GET["uid"];
+// 获取redis里面的数量
+$num = 10;
+
+// 如果当天人数少于10的时候 则加入队列
+if ($redis->lLen($redis_name) < 10) {
+	$redis->rPush($redis_name, $uid.'%'.microtime());
+	echo $uid.'秒杀成功';
+} else {
+	// 如果人数已达到十个人 返回秒杀已完成
+	echo "秒杀已结束";
+}
+$redis->close();
+
+保存redis中数据至数据库
+include './include/db.php';
+
+// 加载redis组件
+$redis = new Redis();
+$redis->connect("localhost", 6379);
+$redis_name = "mao";
+
+$db = DB::getIntance();
+
+// 死循环
+while (true) {
+	// 从队列最左侧取出一个值来
+	$user = $redis->lPop($redis_name);
+
+	// 判断用户是否存在
+	if (!$user || $user == 'nil') {
+	    sleep(2);
+		continue;
+	}
+
+	// 切割出时间 uid
+	$user_arr = expload('%', $user);
+	$insert_data = array(
+	    'uid' => $user_arr[0],
+	    'time_stamp' => $user_arr[1]
+	);
+
+	// 保存到数据库中
+	$res = $db->insert("redis_queue", $insert_data);
+
+	// 数据库插入的失败的时候回滚机制
+	if (!$res) {
+		$redis->rPush($redis_name, $user);
+	}
+
+	sleep(2);
+}
+
+// 释放redis
+$redis->close();
+
+
+RabbitMQ使用
+RabbitMQ安装(rabbitmq-server php-amqplib)
+
+sudo apt-get install -y php
+sudo apt-get install -y rabbitmq-server
+
+ps aux | grep rabbitmq #查看rabbitmq进程
+需要相关扩展 php-bcmath mbstring dom curl
+sudo apt-get install php-bcmath php-mbstring php-dom php-curl
+sudo apt-get install git
+git clone https://github.com/php-amqplib/php-amqplib.git
+composer update 升级相关依赖包

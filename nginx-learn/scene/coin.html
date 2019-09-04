@@ -1,0 +1,22 @@
+防盗链
+
+目的 防止资源被盗用
+
+防盗链设置思路
+首要方式 区别哪些请求是非正常的用户请求
+
+基于http_refer防盗链配置模块
+syntax valid_referers none | blocked | server_names | string ... ;
+default
+context server, location
+
+<img src="http://.../web.png" />
+
+location ~ .*\.(jpg|gif|png)$ {
+	valid_referers none blocked IP;
+	if ($invalid_referer) {
+	    return 403;
+	}
+}
+curl -I http://.../wei.png
+curl -e "http://www.baidu.com" -I http://.../wei.png

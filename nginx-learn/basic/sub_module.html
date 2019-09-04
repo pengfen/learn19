@@ -1,0 +1,29 @@
+sub_module
+
+--with-http_sub_module HTTP内容替换
+
+http_sub_module
+syntax sub_filter string replacement;
+default --
+context http, server, location
+
+syntax sub_filter_last_modified on|off;
+default sub_filter_last_modified off;
+context http, server, location
+
+syntax sub_filter_once on|off;
+default sub_filter_once on;
+context http, server, location
+
+location / {
+	root /var/www/res;
+	index index.html index.html;
+	sub_filter '<a>imooc' '<a>IMOOC'; #默认替换第一个
+	sub_filter_once off; #替换所有
+}
+
+sudo nginx -tc /etc/nginx/conf.d/default.conf
+sudo nginx -s reload #服务器
+sudo service nginx restart
+
+self.res.com/submodule.html

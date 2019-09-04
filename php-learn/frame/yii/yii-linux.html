@@ -1,0 +1,82 @@
+composer 的安装
+sudo apt-get install curl
+
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+composer
+
+phpunit (sudo apt-get install phpunit)
+mbstring (sudo apt-get install php7.2-mbstring)
+dom (sudo apt-get install php7.2-dom)
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+composer create-project --prefer-dist yiisoft/yii2-app-advanced advanced (注意 advanced 项目名)
+
+初始化项目
+cd resource
+./init
+
+[0] development
+[1] production
+
+配置数据库 (create database resource)
+cd common/config
+vim main-local.php
+
+
+
+php-fpm (php fastCGI 进程管理器)
+
+配置域名
+sudo vim /etc/hosts
+127.0.0.1 self.res.com
+127.0.0.1 admin.res.com
+
+nginx配置 res.conf
+server {
+	charset utf-8;
+	client_max_body_size 128M;
+
+	listen 80; #ipv4 端口监听
+	#listen [::]:80 default_server ipv6only=on; #ipv6 端口监听
+
+	server_name self.res.com;
+	root /home/ricky/app/resource/frontend/web;
+	index index.php;
+
+	access_log /var/log/nginx/access-res.log;
+	error_log /var/log/nginx/error-res.log;
+
+	location / {
+		try_files $uri $uri/ /index.php$is_args$args;
+	}
+
+	location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+		try_files $uri=404;
+	}
+	error_page 404 /404.html;
+
+	location ~ ^/assets/.*\.php$ {
+		deny all;
+	}
+
+	location ~ \.php$ {
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        #fastcgi_pass 127.0.0.1:9000;
+        #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+        try_files $uri =404;
+	}
+
+	location ~* /\. {
+		deny all;
+	}
+}
+
+注意 php.ini 文件中设置 cgi.fix_pathinfo=0 避免不必要的stat()系统调用
+https 需要添加 fastcgi_param HTTPS on;
+
+sudo nginx -s reload;
+http://self.res.com/
+
+admin.res.conf

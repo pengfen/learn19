@@ -1,0 +1,38 @@
+<?php
+// 文章分类
+require "./config.php";
+$host = $config["host"];
+$user = $config["user"];
+$password = $config["password"];
+$dbname = $config["dbname"];
+$conn = mysqli_connect($host, $user, $password);
+mysqli_select_db($conn, $dbname);
+
+// 1. 获取所有分类
+$sql = "select t.term_id, t.`name`, tt.parent from wp_terms t left JOIN wp_term_taxonomy tt on t.term_id = tt.term_id WHERE taxonomy = 'category'";
+$res = mysqli_query($conn, $sql);
+$category = [];
+if ($res) {
+    while ($row = mysqli_fetch_assoc($res)) {
+        $category[] = $row;
+    }
+}
+
+mysqli_close($conn);
+
+function getTree($data, $pId)
+{
+    $tree = '';
+    foreach($data as $k => $v)
+    {
+        if($v['parent'] == $pId)
+        { //父亲找到儿子
+            $v['parent'] = getTree($data, $v['term_id']);
+            $tree[] = $v;
+        }
+    }
+    return $tree;
+}
+
+$tree = getTree($category, 0);
+echo json_encode($tree);

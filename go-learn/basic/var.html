@@ -1,0 +1,85 @@
+常量 (var.go)
+
+1. 常量使用const修饰 代表永远是只读的 不能修改
+2. const 只能修饰boolean number (int相关类型 浮点类型 complex)和string
+3. 语法 const identifier [type] = value 其中type可以省略
+
+const b string = "welcome to "
+const b = "welcome"
+const Pi = 3.1414926
+const a = 9/3
+const c = getValue() // 非法
+
+4. 比较优雅的写法
+const(a=0 b=1 c=2)
+5. 更加专业的写法
+const(a=iota 
+b  //1 
+c  //2)
+
+
+预定义常量
+true false iota
+iota 可被认为可被编译器修改的常量 在第一个const关键字出现时重置为0
+
+
+变量 (var.go)
+变量类型写在变量名之后   编译器可推测变量类型   没有char 只有rune   原生支持复数类型
+1. 语法 var identifier type 
+var a int
+var b string
+var c bool
+var d int = 8
+var e string = "welcome"
+var v1 [10]int // 数组
+var v2 []int // 数组切片
+var v3 *int // 指针
+var v4 map[string]int // map, key为string类型 value为int类型
+
+
+// 定义多个变量
+Var (
+	a int // 默认为0
+	b string // 默认为""
+	c bool // 默认为false
+	d int = 8
+	e string = "welcome"
+)
+
+
+变量初始化
+var v1 int = 10
+var v2 = 10 // 编译器自动推导数据类型
+v3 := 10 // 编译器自动推导数据类型
+
+注意 (:=左侧的变量不能被声明过)
+var i int
+i := 2 // 会报错 no new variables on left side of :=
+
+
+匿名变量 
+
+func GetName() (firstName, lastName, nickName string) {
+	return "cao", "peng", "ricky"
+}
+
+_, _, nickName := GetName() // 只获得nickName
+
+内建变量类型
+bool, string
+(u)int, (u)int8, (u)int16, (u)int32, (u)int64, uintptr
+byte, rune
+float32, float64, complex64, complex128
+
+值类型和引用类型
+1. 值类型 变量直接存储值 内存通常在栈中分配
+2. 引用类型 变量存储的是一个地址 这个地址存储最终的值 内存通常在堆上分配 通过GC回收
+
+值类型 基本数据类型int float bool string以及数组和struct
+引用类型 指针 slice map clean 等都是引用类型
+
+
+变量的作用域
+
+在函数内部声明的变量叫做局部变量 生命周期仅限于函数内部
+在函数外部声明的变量叫做全部变量 生命周期作用于整个包 如果是大写的 则作用于整个程序

@@ -1,0 +1,26 @@
+创建block项目
+在block下创建 bin pkg src三个目录
+指定GOPATH  settings ---> GOPATH ---> ~/go/src/project/block
+
+src 目录下创建 coin(入口) core(核心)
+
+core 
+block.go 区块
+blockchain.go 区块链
+演示
+export GOPATH=/home/ricky/project/block
+go install coin
+cd bin
+./coin
+
+实现区块的结构
+在区块链中 存储有效信息的是区块
+Timestamp是当前时间戳 也就是区块创建的时间
+PrevBlockHash存储的是前一个区块的哈希值
+Data是区块存储的实际有效的信息
+Hash是当前本区块的哈希值
+
+区块组成链式结构
+区块链是有首特定结构的数据库 一个有序后向连接的列表
+区块按照插入的顺序进行存储 每个块都被连接到前一个块
+快速地获取链上的最新块 并且高效地通过哈希来检索一个块

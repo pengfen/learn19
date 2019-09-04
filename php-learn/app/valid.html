@@ -1,0 +1,31 @@
+接口文件
+
+// 判断用户是否为有效用户
+$util = new Utils();
+$flag = $util->valid_user($_POST, $db, $code);
+if ($flag) exit;
+
+Util.php 文件
+function valid_user($post, $db, $code) {
+    $site = isset($post["site"])?$post["site"]:"";
+    if ($site != "pc") {
+        $token = isset($post["token"])?$post["token"]:"";
+        $user_id = isset($post["user_id"])?$post["user_id"]:0;
+        $flag = $this->check_user($db, $user_id, $token);
+        if ($flag) {
+            echo json_encode(["code" => 1011, "msg" => $code[1011]]);
+            return true;
+        }
+    }
+    return false;
+}
+
+function check_user($db, $user_id, $token) {
+    if (!$user_id) return true;
+    $sql = "select token from table_name where ID = $user_id";
+    $source = $db->get_var($sql);
+    if ($source !== $token) {
+        return true;
+    }
+    return false;
+}

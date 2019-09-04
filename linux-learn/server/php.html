@@ -1,0 +1,59 @@
+ubuntu16 安装 php 环境
+sudo apt-get update
+
+sudo apt-get install nginx
+注意 由于版本更新导致某些模块无效 (libc6-dev)
+sudo apt-get install libc6-dev
+
+#sudo /etc/init.d/nginx start
+sudo service nginx start
+sudo nginx -s reload #重启nginx
+ps -ef | grep 80
+
+sudo apt-get install php php-fpm (会安装最新的)
+
+sudo apt-get install php7.1 php7.1-fpm
+sudo vi /etc/nginx/sites-available/default
+
+location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/run/php/php7.1-fpm.sock;
+}
+
+sudo vi /etc/php/7.1/fpm/pool.d
+listen = /run/php/php7.1-fpm.sock
+
+php.ini 文件
+/etc/php/7.1/cli/php.ini
+/etc/php/7.1/fpm/php.ini
+
+sudo service nginx restart
+sudo /etc/init.d/php7.1-fpm restart
+
+
+sudo apt-get -y install mysql-server mysql-client php7.1-mysql
+ps -ef | grep 3306
+注意 php版本 选择对应的mysql扩展
+php -m (php-mysql 会安装mysqli扩展)
+
+mysql5.7 密码
+cd /etc/mysql/mysql.conf.d
+sudo vim mysqld.cnf
+skip-external-locking后面添加一行 skip-grant-tables
+sudo service mysql restart
+mysql
+use mysql;
+update user set authentication_string=PASSWORD('新密码') where user='root';
+update user set plugin="mysql_native_password";
+
+flush privileges;
+quit
+
+注释掉skip-grant-tables;
+sudo service mysql restart
+
+启动 nginx 服务时报错
+Job for nginx.service failed because the control process exited with error code.
+See "systemctl  status nginx.service" and "journalctl  -xe" for details.
+
+修改的地方少了;分号

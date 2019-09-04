@@ -1,0 +1,21 @@
+终端读写
+文件读写
+
+终端读写
+操作终端相关文件句柄常量
+os.Stdin 标准输入 
+os.Stdout 标准输出
+os.Stderr 标准错误输出
+
+带缓冲区的读写 (os_buffer.go)
+
+
+练习 从终端读取一行字符串 统计英文 数字 空格以及其他字符的数量
+
+
+os.File封装所有文件相关操作，之前讲的 os.Stdin,os.Stdout, os.Stderr都是
+     *os.File
+a 打开一个文件进行读操作： os.Open(name string) (*File, error)
+b 关闭一个文件：File.Close()
+
+文件操作 (file.go)

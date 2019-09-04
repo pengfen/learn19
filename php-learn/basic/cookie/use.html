@@ -1,0 +1,21 @@
+js登录提交前设置cookie
+setCookie("user_email", email);
+$("#login-form").submit();
+
+function setCookie(name, value) {
+	var Days = 30;
+	var exp = new Date();
+	exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+	document.cookie = name + "-" + escape(value) + ";expires=" + exp.toGMTString();
+}
+
+php设置cookie
+setcookie(
+    'user_email', //cookie名字，必需的
+    $email,     //cookie的值
+    time()+30*24*60*60, //过期时间,设置为一个星期
+    '/'              //cookie可用的文件路径
+//'demo.tutorialzine.com' //cookie绑定的域名
+);
+取cookie值
+$_COOKIE["user_email"];

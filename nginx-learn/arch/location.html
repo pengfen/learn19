@@ -1,0 +1,17 @@
+location匹配优先级
+
+=      进行普通字符精确匹配 也就是完全匹配
+^~     表示普通字符匹配 使用前缀匹配
+~ \~*  表示执行一个正则匹配()
+
+location = /code1/ {
+	rewrite ^(.*)$ /code1/index.html break;
+}
+
+location ~ /code.* {
+	rewrite ^(.*)$ /code3/index.html break;
+}
+
+location ^~ /code {
+	rewrite ^(.*)$ /code2/index.html break;
+}

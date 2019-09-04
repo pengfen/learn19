@@ -1,0 +1,41 @@
+$sql = "select ...";
+$info = $db->get_result($sql);
+
+$redis = new Redis();
+$redis->connect("localhost", 6379);
+
+// 删除有序集合的缓存数据
+$redis->zRemrangeByRank("market", 0, -1);
+foreach($info as $key => $val) {
+	$redis->zAdd("market", $val["ticker"], json_encode($val));
+}
+
+// 取出缓存数据
+$json_data = $redis->zRange("market", 0, -1, true);
+var_dump($json_data);
+
+
+// 需求 对交易数据要求延迟低
+// 脚本中保存数据
+$redis = new Redis();
+$redis->connect("localhost", 6379);
+
+$redis->zRemRangeByRank("market", 0, -1); // 清除缓存数据
+$time = time();
+
+拉取数据
+
+if ($val["currency"] == "USD" || $val["currency"] == "USDT") {
+	// 只保存USDT交易对信息
+	$redis->zAdd("market", $val["ticker"], json_encode($market));
+}
+
+
+// 列表中取出数据
+$res = $redis->zRange("market", 0, -1, true);
+
+if ($res) {
+	foreach($res as $key => $val) {
+	    $info[] = json_decode($key, true);
+	}
+}

@@ -1,0 +1,73 @@
+静态资源类型
+
+非服务器动态运行生成的文件
+
+浏览器端渲染  html css js
+图片 jpeg gif png
+视频 flv mpeg
+文件 txt 等任意下载文件
+
+
+静态资源服务场景 cdn
+
+
+文件读取
+snytax sendfile on | off;
+default sendfile off;
+context http, server, location, if in location
+
+--with-file-aio 异步文件读取
+
+tcp_nopush
+syntax tcp_nopush on | off;
+default tcp_nopush off;
+context http, server, location
+
+作用 sendfile开启的情况下 提高网络包的传输效率
+
+tcp_nodelay
+syntax tcp_nodelay on | off;
+default tcp_nodelay on;
+context http, server, location
+
+keepalive 连接下 提高网络包的传输实时性
+
+压缩
+syntax gzip on | off;
+default gzip off;
+context http, server, location, if in location
+
+作用 压缩传输
+
+压缩
+syntax gzip_comp_level level;
+default gzip_comp_level 1;
+context http, server, location
+
+syntax gzip_http_version 1.0 | 1.1;
+default gzip_http_version 1.1;
+context http, server, location
+
+扩展nginx压缩模块
+http_gzip_static_module 预读gzip功能
+http_gunzip_module 应用支持gunzip的压缩方式
+
+~ .*\.(txt|xml) 
+~ ^/download 以download开头
+
+locationn ~ .*\.(jpg|gif|png)$ {
+	gzip on;
+	gzip_http_version 1.1;
+	gzip_comp_level 2;
+	gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+
+	root /...;
+}
+
+cd ../download
+gzip ./test.img  ---> test.img.gz
+location ~ ^/download {
+	gzip_static on;
+	tcp_nopush on;
+	root ...;
+}

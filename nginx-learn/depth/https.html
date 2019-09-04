@@ -1,0 +1,64 @@
+HTTPS服务
+
+HTTPS协议原理 优势劣势
+
+为什么需要HTTPS HTTP不安全
+传输数据被中间人盗用 信息漏泄
+数据内容劫持 篡改
+
+HTTPS协议的实现 对传输内容进行加密以及身份验证
+对称加密和非对称加密
+
+HTTPS加密协议原理
+
+
+生成密钥和CA证书
+openssl version
+--with-http_ssl_module
+
+生成key密钥
+生成证书签名请求文件(csr文件)
+生成证书签名文件(CA文件)
+
+cd /etc/nginx
+mkdir ssl_key
+cd ssl_key
+openssl genrsa -idea -out im.key 1024
+openssl req -new -key im.key -out im.csr
+Country Name: CN
+state : beijing
+Locality Name: beijing
+Organization Name: CN
+Organization Unit Name: imooc
+Common Name: res.com
+Email Address: caopeng@163.com
+
+openssl x509 -req -days 3650 -in im.csr -signkey im.key =out im.crt
+
+nginx的HTTPS语法配置
+syntax ssl on | off;
+default ssl off;
+context http, server
+
+syntax ssl_certificate file;
+default
+context http, server
+
+syntax ssl_certificate_key file;
+default
+context http, server
+
+server {
+	listen 443;
+	server_name res.com;
+	ssl on;
+	ssl_certificate /etc/nginx/ssl_key/im.crt;
+	ssl_certificate_key /etc/nginx/ssl_key/im.key
+
+}
+
+场景 配置苹果要求的证书
+服务器所有的连接使用TLS1.2以上版本(openssl 1.0.2)
+HTTPS证书必须使用SHA256以上哈希算法签名
+HTTPS证书必须使用RSA 2048位或ECC 256位以上公钥算法
+使用前向加密技术

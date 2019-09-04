@@ -1,0 +1,13 @@
+<html>
+    <head>
+    	<title>{{.Title}}</title>
+    </head>
+    <body>
+    	{{if gt .Age 18}}
+    	<p>{{.Name}}小于18</p>
+    	{{else}}
+    	<p>{{.Name}}大于18</p>
+    	{{end}}
+    	<p>{{.}}</p>
+    </body>
+</html>

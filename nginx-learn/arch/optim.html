@@ -1,0 +1,33 @@
+nginx性能优化
+
+性能优化考虑点
+压测工具ab
+系统与nginx性能优化
+
+性能优化考虑点
+当前系统结构瓶颈  观察指标 压力测试
+了解业务模式  接口业务类型 系统层次化结构
+性能与安全
+
+
+
+系统与nginx的性能优化
+网络 系统 服务 程序 数据库 底层服务 
+
+文件句柄 linux\unix一切皆文件 文件句柄就是一个索引
+设置方式 系统全局性 用户局部性修改 进程局部性修改
+
+vim /etc/security/limits.conf  # 修改文件句柄
+root soft nofile 65535
+root hard nofile 63535
+*    soft nofile 63535
+*    hard nofile 63535
+root root用户
+*    所有用户
+
+
+nginx进程限制
+worker_processes 2;
+worker_rlimit_nofile 35535;
+
+CPU的亲和 cpu.html

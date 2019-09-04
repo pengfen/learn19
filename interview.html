@@ -1,0 +1,39 @@
+文档自动化  composer require weiwei/api-doc dev-master
+
+排序
+class Solution {
+	function sortArray($nums) {
+		$len = sizeof($nums); // sizeof 是count的别名
+		for ($i = 0; $i < $len; $i ++) {
+			for ($j = $i; $j < $len - 1; $j ++) {
+				$temp = $nums[$i][$j];
+				if ($nums[$i][$j] > $nums[$i][$j + 1]) {
+					$temp = $nums[$i][$j];
+					$nums[$i][$j] = $nums[$i][$j + 1];
+					$nums[$i][$j + 1] = $temp;
+				}
+			}
+		}
+		return $nums;
+	}
+}
+
+function longestPalindrome($s) {
+	$stack = new SplStack();
+	$arr = $s.explode("");
+	$len = sizeof($arr);
+	$harf = $len / 2;
+	for ($i = 0; $i < $harf; $i ++) {
+		$stack->push($arr[$i]);
+	}
+
+	$harf = $len / 2;
+	$ret = "";
+	for($j = $harf; $j < $len; $j ++) {
+		$temp = $stack->pop();
+		$if ($temp == $arr[$j]) {
+			$ret .= $temp;
+		}
+	}
+	return $ret;
+}

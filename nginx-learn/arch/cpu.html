@@ -1,0 +1,24 @@
+CPU的亲和 把进程通常不会在处理器之间频繁迁移进程迁移的频率小 减少性能损耗
+
+cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l
+cat /proc/cpuinfo | grep "cpu cores" | wc -l
+cat /proc/cpuinfo | grep "cpu cores" | uniq
+
+ps -eo pid, args, psr | grep [n]ginx
+
+user nginx;
+worker_processes 4;
+worker_cpu_affinity auto;
+worker_rlimit_nofile 35535;
+
+顶层配置 cat /etc/nginx/nginx.conf
+user ubuntu;
+worker_processes auto;
+pid /run/nginx.pid;
+
+/etc/nginx$ cat /proc/cpuinfo | grep processor
+processor	: 0
+processor	: 1
+
+
+top -u 用户 #查看当前用户cpu 内存使用率

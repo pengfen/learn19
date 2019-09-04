@@ -1,0 +1,85 @@
+代理服务
+
+代理 代为办理
+
+代理区别 区别在于代理的对象不一样
+正向代理代理的对象是客户端
+反向代理代理的对象是服务端
+
+proxy_pass URL;
+default
+context location, if in location, limit_except
+
+text_proxy.html
+<h1>welcome to ...</h1>
+
+location ~ /test_proxy.html {
+	proxy_pass http://127.0.0.1:8080;
+}
+
+
+正向代理
+location / {
+	if ($http_x_forwarded_for !~* "^116\.62\.183\.228") {
+		return 403;
+	}
+}
+
+IP (116...)
+location / {
+	proxy_pass http://$http_host$request_uri;
+}
+
+缓冲区
+syntax proxy_buffering on | off;
+default proxy_buffering on;
+context http, server, location
+
+syntax proxy_redirect default;
+proxy_redirect off; proxy_redirect redirect replacement;
+default proxy_redirect default;
+context http, server, location
+
+proxy_read_timeout, proxy_send_timeout
+
+
+location / {
+	proxy_pass http://127.0.0.1:8080;
+	proxy_redirect default;
+
+	proxy_set_header Host $http_host;
+	proxy_set_header X-Real-IP $remote_addr;
+
+	proxy_connect_timeout 30;
+	proxy_send_timeout 60;
+	proxy_read_timeout 60;
+
+	proxy_buffer_size 32k;
+	proxy_buffering on;
+	proxy_buffers 4 128k;
+	proxy_busy_buffers_size 256k;
+	proxy_max_temp_file_size 256k;
+}
+
+sudo nginx -tc /etc/nginx/conf.d/default.conf 检测语法是否合法
+sudo nginx -s reload #服务器
+sudo service nginx restart
+
+http_proxy_module 代理请求到其它服务器
+proxy_pass_header $server 该指令强制一些被忽略的头传递到客户端
+proxy_redirect off 允许改写出现在HTTP头却被后端服务器触发重定向的URL对响应本身不做任何处理
+proxy_set_header Host $http_host; 允许你重新定义代理 header 值再转到后端服务器，目标服务器可以看到客户端的原始主机名
+proxy_set_header X-Real-IP $remote_addr; 目标服务器可以看到客户端的真实 ip，而不是转发服务器的 ip
+
+配置ws协议
+location /websocket {
+    proxy_pass http://127.0.0.1:9502;
+
+	proxy_set_header HOSt $host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header x-Forwarded-For $remote_addr;
+
+	proxy_http_version 1.1;
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection 'upgrade';
+}

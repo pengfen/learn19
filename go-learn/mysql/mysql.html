@@ -1,0 +1,29 @@
+mysql 编程
+
+mysql -uroot -proot
+
+新建测试表
+create table person (
+user_id int primary key auto_increment,
+username varchar(260)
+sex varchar(260)
+email varchar(260)
+)
+
+create table place (
+country varchar(200),
+city varchar(200),
+telcode int
+)
+
+连接mysql
+database, err := sqlx.Open("mysql", "root:root@tcp(127.0.0.1:3306)/test")
+
+go get github.com/go-sql-driver/mysql
+go get github.com/jmoiron/sqlx
+
+
+insert操作
+r, err := Db.Exec("insert into person(username, sex, email) values(?,?,?)", "stu001", "man", "caopeng8787@163.com")
+
+insert.go

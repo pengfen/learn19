@@ -1,0 +1,70 @@
+nginx默认配置语法
+
+http {
+	...
+
+	server {
+	    listen 80;
+	    server_name localhost;
+
+	    location / {
+	        root /usr/share/nginx/html;
+	        index index.html index.htm;
+	    }
+
+	    error_page 500 502 503 504 /50x.html;
+
+	    location = /50x.html {
+	        root /usr/share/nginx/html;
+	    }
+    }
+
+    server {
+        ...
+    }
+}
+user 设置nginx服务的系统使用用户
+worker_processes 工作进程数
+error_log nginx的错误日志
+pid nginx服务启动的pid
+参考 cpu.html
+
+events worker_connections 每个进程允许最大连接数
+       use 工作进程数
+参考event.html
+
+error_page 404 配置404跳转到指定页面
+
+HTTP请求
+request 包括请求行 请求头部 请求数据
+response 包括状态行 消息报头 响应正文
+
+
+nginx日志类型 access.log error.log
+log_format
+syntax log_format name[escape=default|json] string ...
+default log_format combined
+context http
+
+log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                '$status $body_bytes_sent "$http_referer" '
+                '"$http_user_agent" "$http_x_forwarded_for" '
+
+access_log /var/log/nginx/access.log main;
+参考log.html
+
+nginx 变量
+http请求变量 - arg_PARAMETER http_HEADER sent_http_HEADER
+内置变量 nginx内置的
+自定义变量 - 自己定义
+
+
+基本配置
+sendfile 指向 sendfile()函数。sendfile() 在磁盘和 TCP 端口（或者任意两个文件描述符）之间复制数据。—— 在 sendfile 出现之前，为了传输这样的数据，需要在用户空间上分配一块数据缓存，使用 read() 从源文件读取数据到缓存，然后使用 write() 将缓存写入到网络。
+sendfile() 直接从磁盘上读取数据到操作系统缓冲。由于这个操作是在内核中完成的，sendfile() 比 read() 和 write() 联合使用要更加有效率。 不要在意这些细节，说了这么多，只是想说，开着就好。
+
+tcp_nopush 配置 nginx 在一个包中发送全部的头文件，而不是一个一个发送。
+
+tcp_nodelay 配置 nginx 不要缓存数据，应该快速的发送小数据——这仅仅应该用于频繁发送小的碎片信息而无需立刻获取响应的、需要实时传递数据的应用中。
+
+keepalive_timeout 指定了与客户端的 keep-alive 链接的超时时间。服务器会在这个时间后关闭链接。我们可以降低这个值，以避免让 worker 过长时间的忙碌。

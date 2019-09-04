@@ -1,0 +1,30 @@
+sub_status 模块
+
+--with-http_stub_status_module nginx的客户端状态
+
+http_stub_status_module配置
+syntax:; stub_status
+default: --
+context: server, location
+
+location /mystatus {
+	stub_status;
+}
+
+sudo nginx -tc /etc/nginx/conf.d/default.conf 检测语法是否合法
+sudo nginx -s reload #服务器
+sudo service nginx restart
+
+self.res.com/mystatus
+Active connections: 4 
+server accepts handled requests
+ 4 4 1 
+Reading: 0 Writing: 1 Waiting: 3 
+
+4(握手数)  4(连接数)  1(并发数)
+
+
+Active connections: 1 
+server accepts handled requests
+ 74263 74263 104257 
+Reading: 0 Writing: 1 Waiting: 0 

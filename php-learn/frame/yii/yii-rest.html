@@ -1,0 +1,89 @@
+配置 restful 接口
+
+1) 继承 ActiveController (use yii\rest\ActiveController)
+2) config/web.php 中添加配置
+   'request' => ['parsers' => ['application/json' => 'yii\web\JsonParser']]
+3) 添加 modelClass 
+   public $modelClass = 'app\models\Customer';
+4) 添加 behaviors 方法
+   public function behaviors() {
+       $behaviors = parent::behaviors();
+       $behaviors['contnetNegotiator']['formats']['text/html'] = Response::FORMAT_JSON; // use yii\web\Response;
+       return $behaviors;
+   }
+5) 编写 action 方法
+public function actionXxx() {
+	...
+	return ['is_Error' => true, 'message' => '消息'];
+}
+
+18-9-6 2.0.15 版本
+1) 控制器
+use yii;
+use yii\rest\ActiveController;
+use yii\web\Response;
+
+class UserController extends ActiveController
+{
+    public $modelClass = 'frontend\models\User';
+
+	public function actionTest() {
+		Yii::$app->response->format=Response::FORMAT_JSON;
+		return ['code'=>false,'message'=>"wwww"];
+	}
+
+}
+
+2) 模型类
+use yii\db\ActiveRecord;
+
+class User extends ActiveRecord
+{
+    
+    /**
+     * @return string Active Record 类关联的数据库表名称
+     */
+    public static function tableName()
+    {
+        return '{{%users}}';
+    }
+}
+
+3) 配置
+        'response' => [
+            // ...
+            'formatters' => [
+                \yii\web\Response::FORMAT_JSON => [
+                    'class' => 'yii\web\JsonResponseFormatter',
+                    'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+                    'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                    // ...
+                ],
+            ],
+        ],
+
+4) 路曲重写
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+		    'enableStrictParsing' => true,
+		    'showScriptName' => false,
+		    'rules' => [
+		        ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
+		    ],
+        ],
+        
+.htaccess
+Options +FollowSymLinks
+IndexIgnore */*
+
+RewriteEngine on
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
+
+RewriteRule \.svn\/  /404.html
+RewriteRule \.git\/  /404.html

@@ -1,0 +1,16 @@
+swoole 获取get中数据
+
+客户端
+var ws = new WebSocket("ws://dev.blockasia.io/websocket/?room_id=100&user_id=1")
+room_id 房间号
+user_id 用户id
+
+服务端
+$ws_server-on("open", function($ws, $request) use ($redis) {
+	var_dump($request); // 查看请求信息
+
+	// 用户信息
+	$user = $request->get;
+
+	// 处理房间号 用户id ...
+})

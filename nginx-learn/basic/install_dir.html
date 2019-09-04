@@ -1,0 +1,59 @@
+安装目录讲解
+
+/etc/logrotate.d/nginx 配置文件 nginx日志轮转 用于logrotate服务的日志切割
+
+/etc/nginx 目录 nginx主配置文件
+/etc/nginx/nginx.conf 配置文件
+/etc/nginx/conf.d
+/etc/nginx/conf.d/default.conf
+
+/etc/nginx/fastcgi_params 配置文件 cgi配置相关 fastcgi配置
+/etc/nginx/uwsgi_params
+/etc/nginx/scgi_params
+
+/etc/nginx/koi-utf 配置文件 编码转换映射转化文件
+/etc/nginx/koi-win
+/etc/nginx/win-utf
+
+/etc/nginx/mime.type 配置文件 设置http协议的Content-Type与扩展名对应关系
+
+/usr/lib/systemd/system/nginx-debug.service 配置文件 用于配置出系统守护进程管理器管理方式
+/usr/lib/systemd/system/nginx.service
+/etc/sysconfig/nginx
+/etc/sysconfig/nginx-debug
+
+/usr/lib64/nginx/modules 目录 nginx模块目录
+/etc/nginx/modules
+
+/usr/sbin/nginx 命令 nginx服务的启动管理的终端命令
+/usr/sbin/nginx-debug
+
+/usr/share/doc/nginx-1.12.0 文件 目录 nginx的手册和帮助文件
+/usr/share/doc/nginx-1.12.0/COPYRIGHT
+/usr/share/man/man8/nginx.8.gz
+
+/var/cache/nginx 目录 nginx的缓存目录
+
+安装编译参数
+命令 nginx -V
+
+--prefix=/etc/nginx  安装目的目录或路径
+--sbin-path=/usr/sbin/nginx
+--modules-path=/usr/lib64/nginx/modules
+--conf-path=/etc/nginx/nginx.conf
+--error-log-path=/var/log/nginx/error.log
+--http-log-path-/var/log/nginx/access.log
+--pid-path=/var/run/nginx.pid
+--lock-path=/var/run/nginx.lock
+
+--http-client-body-temp-path=/var/cache/nginx/client_temp 执行对应模块时 nginx所保留的临时性文件
+--http-proxy-temp-path=/var/cache/nginx/proxy_temp
+--http-fastcgi-temp-path=/var/cache/nginx/uwsgi_temp
+--http-scgi-temp-path=/var/cache/nginx/scgi_temp
+
+--user=nginx 设定nginx进程启动的用户和组用户
+--group=nginx
+
+--with-cc-opt=parameters 设置额外的参数将被添加到CFLAGS变量
+
+--with-Id-opt=parameters 设置附加的参数 链接系统库

@@ -1,0 +1,28 @@
+# coding: utf-8
+
+import os
+import re
+import sys
+import util
+from telegram.error import BadRequest, TelegramError
+from telegram.ext import Updater, CommandHandler, RegexHandler
+
+def get_your_name(bot, update):
+    telegram_name = update.message.from_user.name
+    f = open("/var/www/script/log/username.txt","a")
+    f.write(telegram_name + "|")
+    f.close;
+    # telegram_id = update.message.from_user.id
+    # update.message.reply_text("%s:%s" % (telegram_name, telegram_id))
+
+@util.just_one_instance()
+def main(*args, **kargs):
+    updater = Updater(TOKEN)
+    #匹配单词空格等
+    updater.dispatcher.add_handler(RegexHandler('^[0-9a-zA-Z\s]+$', get_your_name))
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main(port=60011);

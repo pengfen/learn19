@@ -1,0 +1,21 @@
+global $wpdb;
+
+$prefix = $wpdb->prefix;
+1. 添加数据
+$wpdb->insert($table, $data)
+
+2. 更新数据
+$wpdb->update($table, $data, $where)
+
+3. 删除数据
+$wpdb->query("delete from ".$prefix."tbale_name where ... ");
+
+查询 $sql = "select ... from  ".$prefix."table_name where ... ";
+4. 查询单个值
+$wpdb->get_var($sql);
+
+5. 查询一行记录
+$wpdb->get_row($sql);
+
+6. 查询多行记录
+$wpdb->get_results($sql);

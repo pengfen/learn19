@@ -1,0 +1,6 @@
+user nginx; #nginx用户
+worker_processes 8; #与虚拟要核数一致
+worker_cpu_affinity auto;
+
+worker_rlimit_nofile 35535; #1W以上
+

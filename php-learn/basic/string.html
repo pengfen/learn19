@@ -1,0 +1,247 @@
+PHP 中的字符串
+==============================================================
+1. 字符串的处理介绍
+		在C语言中字符串是作为字节数组处理的。在Java语言中字符串是作为对象处理的。而php则把字符串作为基本数据类型来处理。
+		通常对字符串的处理涉及字符串的格式化。字符串的分割和连接、字符串的比较、以及字符串的查找、匹配和替换。
+2. 常用的字符串输出函数
+		2.1 常用的输出字符串函数：
+			echo( )   -- 输出字符串
+			print( )  -- 输出一个字符串
+			die( )    -- 输出一条消息，并退出当前脚本
+			printf( ) -- 输出格式化字符串
+			sprintf( )-- 把格式化的字符串写入一个变量中
+		2.2 printf与sprintf都是格式化字串：
+			字符串转换格式：
+				%%	返回百分比符号
+				%b	二进制数
+				%c	依照ASCII值的字符
+				%d	带符号十进制数
+				%e    	可续计数法（如1.5e3）
+				%u	无符号十进制数
+				%f或%F 	浮点数
+				%o	八进制数
+				%s	字符串
+				%x或%X  十六进制数
+3. 常用的字符串格式化函数
+	3.1 去除空格和字符串填充补函数
+		ltrim()
+		rtrim()
+		trim()
+		str_pad()
+	3.2 字符串大小写的转换
+		strtolower()
+		strtoupper()
+		ucfirst()
+		ucwords()
+	3.3 和HTML标签相关联的字符串格式化
+		nl2br
+		htmlspecialchars()
+		htmlentities()
+		strip_tags()
+	3.4 其他字符串格式化函数
+		strrev()
+		strlen()
+		number_format()
+		md5()
+4 字符串操作函数
+	4.1 字符串比较函数
+		 strcmp()
+		 strncmp()
+		 strcasecmp()
+		 strnatcmp()
+		 similar_text()
+	4.2 字符串分割与拼装
+		explode()
+		implode()
+		join()
+	4.3 字符串截取
+		substr()
+	4.4 字符串查找
+		strstr() strchr()
+		strrchr()
+		strpos()
+		strrpos()
+	4.5 字符串替换
+		str_replace()
+
+		
+php 判断是否包含字符串
+
+json 返回后判断 (常用于调用第三方接口时处理)
+if (Strpos($respose, '000000')) { // 处理成功返回的代码 }
+if (strpos($response, 'SUCCESS')) { // 处理成功返回的代码 }
+
+处理单个字符串
+if (strstr($str, "SC")) { 
+    $str = substr($str, 2);
+}
+
+
+截取串
+E:\crm\branches\221\Application\Admin\Controller\Employees\updateallotrule.php
+E:\crm\branches\221\Application\Admin\Controller\Employees
+E:\crm\branches\221\Application\Common/Conf/config.php
+
+echo __FILE__;
+echo dirname(__FILE__);
+echo substr(dirname(__FILE__), 0, -26).'Common/Conf/config.php';
+
+-26 指(Admin\Controller\Employees 26个字符)
+
+
+在C语言中字符串是作为字节数组处理的。在Java语言中字符串是作为对象处理的。而php则把字符串作为基本数据类型来处理。通常对字符串的处理涉及字符串的格式化。字符串的分割和连接、字符串的比较、以及字符串的查找、匹配和替换
+
+常用的输出字符串函数：
+echo( )   -- 输出字符串
+print( )  -- 输出一个字符串
+die( )    -- 输出一条消息，并退出当前脚本
+printf( ) -- 输出格式化字符串
+sprintf( )-- 把格式化的字符串写入一个变量中
+如：echo ‘aaa’,’bbbb’,’ccc’;//输注多个值
+$link=@mysql_connect(“”,””,””)or die(“失败”)
+
+printf与sprintf都是格式化字串：
+字符串转换格式：
+%%	返回百分比符号
+%b	二进制数
+%c	依照ASCII值的字符
+%d	带符号十进制数
+%e    	可续计数法（如1.5e3）
+%u	无符号十进制数
+%f或%F 	浮点数
+%o	八进制数
+%s	字符串
+%x或%X  十六进制数
+
+函数:ltrim( ) 
+	语法: string ltrim(string str[, string charlist] ); 
+	返回值: 字符串 
+	本函数用来删去字符串中的前导空格 (whitespace)。
+函数:rtrim( )     （还有个别名：chop（））
+	语法: string rtrim(string str[, string charlist] ); 
+	返回值: 字符串 
+	本函数用来删去字符串中的后缀空格 (whitespace)。
+函数:trim( ) 
+	截去字符串首尾的空格。 
+	语法: string trim(string str[, string charlist] ); 
+	返回值: 字符串 
+	本函数返回字符串 string 首尾的空白字符去除后的字串。
+
+函数：str_pad() 按需求对字符串进行填充。
+	语法：string str_pad ( string input, int pad_length [, string pad_string [, int pad_type]] ) 
+STR_PAD_LEFT    字符串左添补
+STR_PAD_RIGHT 字符串右添补
+STR_PAD_BOTH  字符串两端添补
+<?php$input = "Alien";echo str_pad($input, 10);        // produces "Alien     "echo str_pad($input, 10, "-=", STR_PAD_LEFT);  
+					    // produces "-=-=-Alien"echo str_pad($input, 10, "_", STR_PAD_BOTH);   
+					    // produces "__Alien___"echo str_pad($input, 6 , "___");               
+					    // produces "Alien_“
+?> 
+
+函数: strtolower( ) 
+	语法: string strtolower(string str); 
+	本函数将字符串 str 全部变小写字符串。 
+函数: strtoupper( ) 
+	语法: string strtoupper(string str); 
+	本函数将字符串 str 全部变大写字符串。 	
+函数:ucfirst( ) 
+	将字符串第一个字符改大写。 
+	语法: string ucfirst(string str); 
+	本函数返回字符串 str 第一个字的字首字母改成大写。
+函数:ucwords( ) 
+	将字符串每个字第一个字母改大写。 
+	语法: string ucwords(string str); 
+	本函数返回字符串 str 每个字的字首字母全都改成大写。
+
+函数：nl2br( )
+语法：string nl2br ( string string )将字符串中”\n”转成HTML换行符“<br / >”
+函数：htmlspecialchars（）
+语法：string htmlspecialchars ( string string [, int quote_style [, string charset]] )把指定特殊符号转换成实体，如&lt;&gt;
+		'&' ：'&amp;' 		'“'：'&quot;'
+		'''	：'&#039;'		'< '：'&lt;' 
+		'>' ：'&gt;' 
+
+函数： htmlentities（）
+语法：string htmlentities ( string string [, int quote_style [, string charset]] )可以将所有的非ASCII码转换成对应实体代码。
+<?php$str = "A 'quote' is <b>bold</b>";// Outputs: A 'quote' is &lt;b&gt;bold&lt;/b&gt;echo htmlentities($str);// Outputs: A &#039;quote&#039; is &lt;b&gt;bold&lt;/b&gt;echo htmlentities($str, ENT_QUOTES);?> 
+
+函数：string strip_tags（）
+语法：string strip_tags ( string str [, string allowable_tags] )删除HTML的标签函数
+<?php$text = ‘<p>Test paragraph.</p><!-- Comment --> Other text’;echo strip_tags($text); //Test paragraph. Other text echo “\n”;// 保留 <p>echo strip_tags($text, '<p>');
+		//输出：<p>Test paragraph.</p> Other text 
+?> 
+
+函数: strrev( ) 
+	颠倒字符串。将字符串前后颠倒。 
+	语法: string strrev(string string);
+函数: strlen( ) 
+	取得字符串长度。 
+	语法: int strlen(string str); 
+	本函数返回指定的字符串长度。
+函数：number_format()语法：string number_format ( float number [, int decimals [, string dec_point, string thousands_sep]] )格式货币、数字、时间等。
+函数：md5（） 加密函数
+   格式：string md5 (string str [, bool raw_output] ) 
+
+
+字符串比较函数
+PHP中，有多种方法可以对字符串进行比较，除了可以直接使用条件运算符（<, >, ==）加以比较外。
+按字节进行字符串的比较
+strcmp();（整个比较是否相同）
+strncmp();（指定比较长度的字符串比较）
+strcasecmp(); （不区分大小写的全串比较）
+按自然排序法时行字符串的比较
+strnatcmp(); 
+字符串的模糊比较
+similar_text(); （返回相似字符串的个数）
+
+字符串的分割与拼装
+explode -- 使用一个字符串分割另一个字符串 
+	语法：array explode ( string separator, string string [, int limit] )
+	此函数返回由字符串组成的数组，每个元素都是 string 的一个子串，它们被字符串 separator 作为边界点分割出来。如果设置了 limit 参数，则返回的数组包含最多 limit 个元素，而最后那个元素将包含 string 的剩余部分。 例如：	
+	$pizza  = "piece1 piece2 piece3";
+	$pieces = explode(" ", $pizza);
+	echo $pieces[0]; 	// piece1
+	echo $pieces[1]; 	// piece2
+
+implode（）
+	用一组较小的字符串创建一个大字符串。
+	格式：string implode ( string glue, array pieces )
+    第一个参数glue是放在第二个参数pieces的元素之间的字符串。可以像下面这样重建简单的逗号分隔的字符串。
+	例如：
+	$array = array(‘lastname’, ‘email’, ‘phone’);$comma_separated = implode(“,”, $array);echo $comma_separated; // 
+	显示lastname,email,phone
+
+
+字符串的截取
+函数:substr( ) 
+	取部份字符串。 
+	语法: string substr(string string, int start, int [length]); 
+	返回值: 字符串 
+	本函数将字符串 string 的第 start 位起的字符串取出 length 个字符，若省略参数 length，则取到字符串末尾 。若 start 为负数，则从字符串尾端往前开始提取。如果length为整数，表示返回length个字符，若为负数，则表示取到倒数第 length 个字符。
+
+字符串的查找:
+函数: strstr( )  别名：strchr( ) 
+	返回字符串中某字符串开始处至结束的字符串。 
+	语法: string strstr(string haystack, string needle); 
+	返回值: 字符串 
+	本函数将 needle 最先出现在 haystack 处起至 haystack 结束的字符串返回。若找不到 needle 则返回 false。
+函数: strrchr() 
+	取得某字符最后出现的位置。 
+	语法: string strrchr(string haystack, string needle); 
+	本函数用来寻找字符串 haystack 中的字符 needle 最后出现位置，并将此位置起至字符串 haystack 结束之间的字符串返回。若没有找到 needle 则返回 false。 
+
+函数:strpos() 
+	寻找字符串中某字符最先出现的位置。默认从 0 开始。 
+	语法: int strpos(string haystack, string needle, int [offset]); 
+	本函数用来寻找字符串 haystack 中的字符 needle 最先出现的位置。若找不到指定的字符，则返回 false 值。参数 offset 可省略，用来表示从 offset 开始找。
+函数:strrpos( ) 
+	寻找字符串中某字符最后出现的位置。 
+	语法: int strrpos(string haystack, char needle); 
+	返回值: 整数 
+	本函数用来寻找字符串 haystack 中的字符 needle 最后出现的位置。若找不到指定的字符，则返回 false 值
+
+str_replace()
+字符串替换，三种替换方式
+str_replace(string $search, string $replace, string $str);
+str_replace(array $search, string $replace, string $str);
+str_replace(array $search, array $replace, string $str);

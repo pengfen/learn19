@@ -1,0 +1,26 @@
+1. time包
+2. time.Time类型 用来表示时间
+3. 获取当前时间 not := time.Now()
+4. time.Now().Day()，time.Now().Minute()，time.Now().Month()，time.Now().Year()
+5. 格式化，fmt.Printf(“%02d/%02d%02d %02d:%02d:%02d”, now.Year()…)
+6. time.Duration用来表示纳秒
+7. 一些常量：
+const(
+Nanosecond Duration=1
+Microsecond = 1000 * Nanosecond
+Millisecond = 1000 * Microsecond
+Second = 1000 * Millisecond
+Minute = 60 * Second
+Hour = 60 * Minute
+)
+8. 格式化
+now := time.Now()
+fmt.Println(now.Format("02/1/2006 15:05"))
+fmt.Println(now.Format("2006/1/02 15:04"))
+fmt.Println(now.Format("2006/1/02"))
+
+练习 写一个程序 获取当前时间 并格式化成 2017/06/15 08:05:00形式
+time.go
+
+练习 写一个程序 统计一段代码的执行耗时 单位精确到微秒
+time.go

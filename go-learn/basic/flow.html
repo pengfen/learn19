@@ -1,0 +1,70 @@
+流程控制 (flow.go)
+for, if 后面的条件没有括号
+if条件里也可定义变量
+没有while
+switch不需要break 也可以直接switch多个条件
+
+if/else分支判断
+if condition1 {}
+if condition1 {}
+else{}
+
+if condition1 {}
+else if condition2 {}
+else {}
+
+
+写一个程序，从终端读取输入，并转成整数，如果转成整数出错
+则输出 “can not convert to int”，并返回。否则输出该整数。
+
+switch case 语句
+switch var {
+	case var1:
+	case var2:
+	case var3:
+	default:
+}
+
+
+var i = 0
+switch {
+condition1:
+      fmt.Println(“i > 0 and i < 10”)
+condition2:
+fmt.Println(“i > 10 and i < 20”)
+default:
+     fmt.Println(“def”)
+}
+
+猜数字，写一个程序，随机生成一个0到100的整数n，然后用户在终端
+输入数字，如果和n相等，则提示用户猜对了。如果不相等，则提示用户，大于
+或小于n。
+
+
+for语句
+for 初始化语句;条件判断;变量修改 {}
+for i := 0; i < 100; i ++ {
+	fmt.Printf("i=%d\n", i)
+}
+注意for(i := 0; i < 100; i ++)
+练习12：写一个程序，在终端打印如下图形
+
+for  条件 {
+}
+
+for i > 0 {
+      fmt.Println(“i > 0”)
+}
+
+for true {
+      fmt.Println(“i > 0”)
+}
+
+for {
+      fmt.Println(“i > 0”)
+}
+
+for.go
+
+
+goto 和label 语句 (flow.go)

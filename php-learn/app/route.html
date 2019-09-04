@@ -1,0 +1,42 @@
+接口 http://localhost/app/user/info 调用流程
+
+1. 去除index.php (参考 yii-host.html)
+apache的.htaccess文件重写路由
+
+Options +FollowSymLinks
+IndexIgnore */*
+RewriteEngine on
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
+
+2. index.php 处理路由并拦截
+$url = $_SERVER["REDIRECT_URL"]; // ---> /app/user/info
+
+$url_param = explode("/", $url);
+
+$controller = $url_param[2];
+$action = $url_param[3];
+
+if ($controller && $action) {
+    require_once "./controller/".$controller.".php";
+    $obj = new $controller; // ---> $obj = new user();
+
+    $obj->$action(); // ---> $obj->info();
+}
+
+3. 编写对应类
+class user {
+
+    public function info() {
+        // 处理业务逻辑
+    }
+
+    function __call($functionName, $args){
+        echo json_encode(["code" => 1011, "msg" => "参数错误"]);
+    }
+}

@@ -1,0 +1,30 @@
+http_upstream_module 使用请求被上行信通之间的基于客户端的IP地址分布
+
+upstream backend {
+    server backend1.example.com weight=5;
+    server backend2.example.com:8080;
+    server unix:/tmp/backend3;
+}
+
+server {
+	location / {
+	    proxy_pass http://backend
+	}
+}
+
+ip_hash 基于客户端的IP地址在服务器间进行分发
+upstream backend {
+  ip_hash;
+  server   backend1.example.com;
+  server   backend2.example.com;
+  server   backend3.example.com  down;
+  server   backend4.example.com;
+}
+
+
+这个指令描述了一个服务器的集合，该集合可被用于 proxy_pass 和 fastcgi_pass 指令中，作为一个单独的实体。这些服务器可以是监听在不同的端口，另外，并发使用同时监听 TCP 端口和 Unix 套接字的服务器是可能的。 这些服务器能被分配不同的权重。如果没有指定，则都为 1 。
+upstream backend {
+  server backend1.example.com weight=5;
+  server 127.0.0.1:8080 max_fails=3  fail_timeout=30s;
+  server unix:/tmp/backend3;
+}

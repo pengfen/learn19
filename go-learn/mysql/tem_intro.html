@@ -1,0 +1,46 @@
+模板
+
+替换 {{.字段名}}
+
+if 常见操作符
+
+not 非
+{{if not .condition}}
+{{end}}
+
+and 与
+{{if and .condition1 .condition2}}
+{{end}}
+
+or 或
+{{if or .condition1 .condition2}}
+{{end}}
+
+eq 等于
+{{if eq .var1 .var2}}
+{{end}}
+
+ne 不等于
+{{if ne .var1 .var2}}
+{{end}}
+
+lt 小于 (less than)
+{{if lt .var1 .var2}}
+{{end}}
+
+le 小于等于
+{{if le .var1 .var2}}
+{{end}}
+
+gt 大于
+{{if gt .var1 .var2}}
+{{end}}
+
+{{.}}
+
+{{with .Var}}
+{{end}}
+
+循环
+{{range.}}
+{{end}}

@@ -1,0 +1,25 @@
+windows安装python
+1. 下载python https://www.python.org/downloads/
+
+2. 安装时勾选 Add Python 3.6 to PATH
+
+3. 验证 cmd ---> python -v
+
+linux安装python
+1. 安装python
+下载python源码 https://www.python.org/downloads/
+tar -zxvf python... -C ~/app/
+./configure --prefix=/usr/local/python
+sudo apt install -y gcc
+sudo apt install -y make
+sudo make install
+
+2. 安装setuptools
+下载 setuptools https://pypr.org/project/setuptools ---> Download files
+解压 tar -zxvf setuptools... -C ~/app/
+安装 python setup.py install
+
+3. 安装pip
+下载 pip https://pypr.org/project/pip ---> Download files
+解压 tar -zxvf pip... -C ~/app/
+安装 python pip install

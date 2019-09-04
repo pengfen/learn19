@@ -1,0 +1,17 @@
+相同server_name多个虚拟主机优先级访问
+
+server {
+	listen 80;
+	server_name testserver1 res.com
+	location {
+		...
+	}
+}
+
+server {
+	listen 80;
+	server_name testserver2 res.com;
+	location {
+		...
+	}
+}

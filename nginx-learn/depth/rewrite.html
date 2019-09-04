@@ -1,0 +1,117 @@
+nginx的rewrite规则 http_rewrite_module
+
+实现url重写以及重定向
+
+场景
+url访问跳转 支持开发设计  页面跳转 兼容性支持 展示效果等
+seo优化 
+维护 后台维护 流量转发等
+安全
+
+syntax rewrite regex replacement [flag];
+default
+context server, location, if
+rewrite ^(.*)$ /pages/maintain.html break;
+
+正则表达式
+. 匹配除换行符以外的任意字符
+？ 重复0次或1次
++ 重复1次或更多次
+* 最少链接数 那个机器连接数少就分发
+\d 匹配数字
+^ 匹配字符串的开始
+$ 匹配字符串的结束
+{n} 重复n次
+{n,} 重复n次或更多次
+[C] 匹配单个字符C
+[a-z] 匹配a-z小写字母的任意一个
+\ 转义字符
+rewrite index\.php$ /pages/maintain.html break;
+() 用于匹配括号之间的内容 通过$1 $2调用
+if ($http_user_agent ~ MSIE) {
+	rewrite ^(.*)$ /msie/$1 break;
+}
+
+正则表达式了解透彻
+终端测试命令pcretest
+
+rewrite regex replacement flag
+
+flag
+last 停止rewrite检测  表示完成rewrite
+break 停止rewrite检测  本规则匹配完成后 终止匹配 不再匹配后面的规则 
+redirect 返回302临时重定向 地址栏会显示跳转后的地址
+permanent 返回301永久重定向 地址栏会显示跳转后的地址
+
+location ~ ^/break {
+	rewrite ^/break /test/ break;
+}
+location ~ ^/last {
+	rewrite ^/last /test/ last; #重新请求 /test/
+}
+
+location /test/ {
+	default_type application/json;
+	return 200 '{"status":"success"}';
+}
+
+页面访问 /test/
+
+location ~ ^/imooc {
+	#rewrite ^/imooc http://... permanent;
+	rewrite ^/imooc http://... redirect;
+}
+
+location / {
+	rewrite ^/course-(\d+)-(\d+)-(\d+)\.html$ /course/$1/$2/course_$3.html break;
+
+	# chrome浏览器重定规则
+	if ($http_user_agent ~* Chrome) {
+		rewrite ^/nginx http://.../class/121.html break;
+	}
+}
+
+Rewrite 规则优先级 执行server块的rewrite指令
+执行location匹配 执行选定的location中的rewrite
+
+优雅的Rewrite规则书写
+RewriteCond %{HTTP_HOST} nginx.org
+RewriteRule (.*)
+
+server {
+	listen 80;
+	server_name www.nginx.org nginx.org;
+	if ($http_host == nginx.org) {
+		rewrite (.*) http://www.nginx.org$1;
+	}
+}
+rewrite ^ http://www.nginx.org$request_uri;
+
+
+if (condition) { ... }
+server, location
+
+if ($http_user_agent ~ MSIE) {
+	rewrite ^(.*)$ /msie/$1 break; 
+}
+
+if ($http_cookie ~* "id=([^;] +)(?:;|$)") {
+	set $id $1;
+}
+
+if ($request_method = POST) {
+	return 405;
+}
+
+if (!-f $request_filename) {
+	break;
+	proxy_pass http;
+}
+
+if ($slow) {
+	limit_rate 10k;
+}
+
+if ($invalid_referer) {
+	return 403;
+}

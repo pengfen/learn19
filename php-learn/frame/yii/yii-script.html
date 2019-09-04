@@ -1,0 +1,18 @@
+1. console/controllers 目录创建控制器文件 
+
+2. 编写脚本文件
+<?php
+
+namespace console\controllers;
+
+use yii\console\Controller;
+
+class DemoController extends Controller
+{
+	public function actionIndex() {
+		echo "welcome";
+	}
+}
+
+3. 执行脚本
+/usr/bin/php yii demo/index
